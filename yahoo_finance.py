@@ -41,7 +41,13 @@ class YahooFinanceExporter():
                 currency = transaction["Currency (Price / share)"]
                 price = transaction["Price / share"]
                 quantity = transaction["No. of shares"]
-                tradeDate = datetime.fromisoformat(transaction["Time"])
+                
+                # Attempt to parse the datetime string using different formats
+                time_string = transaction["Time"]
+                try:
+                    tradeDate = datetime.strptime(time_string, '%Y-%m-%d %H:%M:%S.%f')
+                except ValueError:
+                    tradeDate = datetime.strptime(time_string, '%Y-%m-%d %H:%M:%S')
 
                 if action in ["Market buy", "Limit buy", "Stop limit buy"]:
                     quantity = float(quantity)
